@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>نموذج العمل عن بعد</title>
+
+  <!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<!-- Flatpickr للتقويم -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+/* ===== إعدادات الصفحة العامة ===== */
+body {
+  font-family: Arial;
+  background: #f0f0f0;
+  margin: 0;
+  padding: 40px 10px;        /* مسافة من أعلى وأسفل */
+}
+
+/* الفورم في منتصف الصفحة بعرض مناسب */
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;            /* توسيط أفقياً */
+}
+
+/* صندوق الفورم */
+.form-container {
+  background: white;
+  padding: 25px 30px 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.15);
+}
+
+/* شريط العنوان داخل الفورم */
+.form-header {
+  background-color: #4caf50;   /* شريط أخضر واضح */
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 20px;         /* مسافة تحت العنوان */
+}
+
+.form-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* باقي تنسيقات الحقول */
+.form-row { 
+  display: flex; 
+  gap: 20px; 
+  flex-wrap: wrap; 
+}
+.field-box { 
+  flex: 1 1 45%; 
+  border: 1px solid #ccc; 
+  padding: 15px; 
+  border-radius: 6px; 
+  margin-top: 15px; 
+  box-sizing: border-box; 
+}
+.field-box-full { flex: 1 1 100%; }
+label { display: block; margin-bottom: 8px; font-weight: bold; }
+label i { margin-left: 6px; color: #4caf50; }
+input, select, textarea { 
+  width: 100%; 
+  padding: 10px; 
+  box-sizing: border-box; 
+  border: 1px solid #bbb; 
+  border-radius: 4px; 
+  transition: border-color 0.2s; 
+}
+input:focus, select:focus, textarea:focus { 
+  border-color: #4caf50; 
+  outline: none; 
+}
+textarea { resize: vertical; }
+button { 
+  margin-top: 25px; 
+  padding: 12px 30px; 
+  background-color: #4caf50; 
+  color: white; 
+  border: none; 
+  border-radius: 5px; 
+  cursor: pointer; 
+  display: block; 
+  margin-left: auto; 
+  margin-right: auto; 
+}
+@media (max-width: 600px) {
+  .form-row { flex-direction: column; }
+  .field-box { flex: 1 1 100%; }
+  button { width: 100%; }
+}
+</style>
+
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+
+      <!-- عنوان واضح داخل الفورم -->
+      <div class="form-header">
+        <h2>نموذج العمل عن بعد</h2>
+      </div>
+
+      <form id="form" enctype="multipart/form-data">
+        <div class="form-row">
+          <div class="field-box">
+            <label for="jobNumber"><i class="fas fa-id-badge"></i> الرقم الوظيفي:</label>
+            <input type="text" id="jobNumber" name="jobNumber" />
+          </div>
+          <div class="field-box">
+            <label for="empName"><i class="fas fa-user"></i> اسم الموظف:</label>
+            <input type="text" id="empName" name="employeeName" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field-box">
+            <label for="department"><i class="fas fa-building"></i> القسم:</label>
+            <select id="department" name="department">
+              <option value="">اختر القسم</option>
+              <option>قسم مكتب المدير</option>
+              <option>قسم تقنية المعلومات</option>
+              <option>قسم الشؤون الإدارية والمالية</option>
+              <option>قسم الدراسات والتطوير</option>
+              <option>قسم الشكاوى</option>
+              <option>قسم التنظيم ومراقبة الأسواق</option>
+              <option>قسم التواصل والإعلام</option>
+              <option>قسم الشؤون القانونية</option>
+            </select>
+          </div>
+          <div class="field-box">
+            <label for="email"><i class="fas fa-envelope"></i> البريد الإلكتروني:</label>
+            <input type="email" id="email" name="email" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field-box">
+            <label for="dateDisplay"><i class="fas fa-calendar-alt"></i> التاريخ:</label>
+            <input type="text" id="dateDisplay" placeholder="اختر التاريخ" required />
+            <input type="hidden" id="date" name="date" />
+          </div>
+          <div class="field-box">
+            <label for="work"><i class="fas fa-briefcase"></i> نوع العمل:</label>
+            <select id="work" name="workType">
+              <option value="">-- اختر نوع العمل --</option>
+              <option value="خطاب">خطاب</option>
+              <option value="مذكرة">مذكرة</option>
+              <option value="رسالة">رسالة</option>
+              <option value="استمارة">استمارة</option>
+              <option value="شهادة">شهادة</option>
+              <option value="عمل ميداني">عمل ميداني</option>
+              <option value="قرار">قرار</option>
+              <option value="كتابة شكوى">كتابة شكوى</option>
+              <option value="تقرير">تقرير</option>
+              <option value="دورة">دورة</option>
+              <option value="ندوة">ندوة</option>
+              <option value="اتصال هاتفي">اتصال هاتفي</option>
+              <option value="متابعة">متابعة</option>
+              <option value="حضور ورشة أونلاين">حضور ورشة أونلاين</option>
+              <option value="حضور فعالية">حضور فعالية</option>
+              <option value="حضور برنامج تدريبي">حضور برنامج تدريبي</option>
+              <option value="أخرى">أخرى</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field-box field-box-full">
+            <label for="notes"><i class="fas fa-comment-dots"></i> ملاحظات:</label>
+            <textarea id="notes" name="notes" rows="3" placeholder="أدخل الملاحظات إن وجدت..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-top:15px;">
+          <label><i class="fas fa-paperclip"></i> إرفاق مستند:
+            <input type="file" id="attachment" name="attachment" accept=".pdf,.doc,.docx,.jpg,.png" />
+          </label>
+        </div>
+
+        <div class="form-row">
+          <div class="field-box">
+            <label for="manager"><i class="fas fa-user-tie"></i> المسؤول المباشر:</label>
+            <select id="manager" name="managerEmail">
+              <option value="">اختر المسؤول</option>
+              <option value="sultan.alzidi@cpa.gov.om">م.يعقوب الغافري</option>
+              <option value="mohd.alhinai@cpa.gov.om">محمد الهنائي</option>
+              <option value="wadha.alkalbani@cpa.gov.om">وضحى الكلباني</option>
+              <option value="ibtisam.alkalbani@cpa.gov.om">ابتسام الكلباني</option>
+              <option value="maryam.alnassri@cpa.gov.om">مريم الناصري</option>
+              <option value="najia.almamari@cpa.gov.om">ناجية المعمري</option>
+              <option value="Ali.1033@cpa.gov.om">علي اليحيائي</option>
+              <option value="rashid.alsawafi@cpa.gov.om">راشد الصوافي</option>
+              <option value="sultan.alazri@cpa.gov.om">سلطان العزري</option>
+              <option value="mahmood.alalawi@cpa.gov.om">محمود العلوي</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <button type="submit">إرسال</button>
+        </div>
+
+        <div class="success-msg" id="successMsg" style="display: none;">
+          ✅ تم إرسال البيانات بنجاح
+        </div>
+        <div class="error-msg" id="errorMsg" style="display: none;"></div>
+
+       <div style="text-align: center;">
+  <a href="index.html" class="back-link">
+    <i class="fas fa-arrow-right"></i> الرجوع
+  </a>
+</div>
+       
+      </form>
+
+    </div>
+  </div>
+ 
+</body>
+
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWNh6KxXQ8fDAk72onTymDeQqukhqxndhP_dfYoUG2KtJ2YrtzgIjT3sQDWwWi8UStxw/exec";
+
+
+flatpickr("#dateDisplay", {
+  dateFormat: "d-m-Y",
+  locale: "ar",
+  onChange: function (selectedDates) {
+    if (selectedDates.length > 0) {
+      const localDate = new Date(selectedDates[0].getTime() - selectedDates[0].getTimezoneOffset() * 60000);
+      const isoDate = localDate.toISOString().split("T")[0];
+      document.getElementById("date").value = isoDate;
+    }
+  },
+});
+
+document.getElementById("form").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+
+  // البريد للمدير المباشر
+  const managerEmail = document.getElementById("manager").value;
+  formData.append("managerEmail", managerEmail);
+
+  // الأكشن
+  formData.append("action", "uploadFileAndSubmit");
+
+  const fileInput = document.getElementById("attachment");
+  const file = fileInput.files && fileInput.files[0];
+
+  const sendRequest = () => {
+    fetch(SCRIPT_URL, { method: "POST", body: formData })
+      .then(res => res.json())
+      .then(result => {
+        const successMsg = document.getElementById("successMsg");
+        const errorMsg = document.getElementById("errorMsg");
+
+        if (result.status === "success") {
+          successMsg.style.display = "block";
+          errorMsg.style.display = "none";
+          form.reset();
+          document.getElementById("dateDisplay").value = "";
+        } else {
+          throw new Error(result.message || "فشل الإرسال");
+        }
+      })
+      .catch(err => {
+        const errorMsg = document.getElementById("errorMsg");
+        errorMsg.textContent = "❌ حدث خطأ أثناء الإرسال: " + err.message;
+        errorMsg.style.display = "block";
+      });
+  };
+
+  // ✅ إذا فيه ملف: اقرأه وحوّله Base64 ثم أرسله
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const base64Data = event.target.result.split(',')[1];
+      formData.append("attachment", base64Data);
+      formData.append("attachmentType", file.type);
+      formData.append("attachmentName", file.name);
+      sendRequest();
+    };
+    reader.readAsDataURL(file);
+  } else {
+    // ✅ ما فيه ملف: ارسل مباشرة بدون مرفق
+    sendRequest();
+  }
+});
+
+function goToReports() {
+  window.location.href = "report.html";
+}
+
+// (اختياري) منع كليك يمين + اختصارات
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'F12') e.preventDefault();
+    if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) e.preventDefault();
+    if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault();
+  });
+</script>
+</body>
+</html>

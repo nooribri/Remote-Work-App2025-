@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d47a1">
+
+<!-- لأجهزة أبل (آيفون/آيباد) -->
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <title>العمل عن بعد - تسجيل دخول</title>
+  <style>
+    body { 
+      font-family: 'Arial', 
+      sans-serif; background: linear-gradient(to bottom, #e0f7fa, #598fb4);
+       color: #333;
+        text-align: center; 
+        margin: 0; 
+        padding: 0; }
+      
+
+    /* ============ Base ============ */
+:root{
+  --bg1:#15264a;          /* كحلي داكن */
+  --bg2:#154673;          /* أزرق داكن */
+  --card:#ffffff;         /* كرت أبيض */
+  --text:#152a57;         /* نص داخل الكرت (غامق) */
+  --muted:#0b2c61;        /* نص ثانوي */
+  --primary:#0d47a1;      /* أزرق غامق */
+  --primary2:#0b3a86;
+  --border:#d6deea;
+  --shadow: 0 10px 30px rgba(9, 35, 101, 0.114);
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  font-family: Arial, sans-serif;
+  margin:0;
+  padding:0;
+  color:#fff;
+  text-align:center;
+  background: radial-gradient(1200px 600px at 50% 0%, #163b63 0%, var(--bg1) 55%, #070b14 100%);
+}
+
+/* ============ Header (لو تستخدمه) ============ */
+header{
+  width:100%;
+  padding:22px 0 0;
+  position:relative;
+  text-align:center;
+}
+
+.right-text{
+  position:absolute;
+  right:18px;
+  top:14px;
+  text-align:right;
+  color:#e9eef7;
+}
+.right-text h2,.right-text h3,.right-text h4{
+  margin:0;
+  font-weight:700;
+}
+
+.logo-container{ margin-top:10px; display:flex; justify-content:center; }
+.logo{ width:120px; height:auto; display:block; }
+
+.center-title{ margin-top:10px; color:#e9eef7; }
+.center-title h1{
+  font-size:2rem;
+  margin:10px 0 0;
+  font-weight:800;
+}
+.center-title h2{
+  margin:6px 0;
+  opacity:.9;
+  font-size:1.1rem;
+  font-weight:700;
+}
+
+/* ============ Layout ============ */
+.container{
+  min-height: calc(100vh - 80px);
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+/* ============ Card (Login/Menu) ============ */
+.login-box,
+.menu-area{
+  width:100%;
+  max-width:440px;
+  background: var(--card);
+  color: var(--text);
+  padding:32px 28px;
+  border-radius:16px;
+  box-shadow: var(--shadow);
+  border:1px solid rgba(13,71,161,.10);
+}
+
+.login-box h2{
+  margin:0 0 18px;
+  font-size:1.2rem;
+  font-weight:800;
+  color:#061027;
+}
+
+/* Inputs */
+input{
+  width:100%;
+  padding:12px 14px;
+  margin:12px 0 10px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  font-size:16px;
+  font-weight:700;
+  color:#071028;
+  outline:none;
+  background:#fbfdff;
+}
+input::placeholder{ color:#7a8aa6; font-weight:600; }
+input:focus{
+  border-color: rgba(13,71,161,.65);
+  box-shadow: 0 0 0 4px rgba(13,71,161,.12);
+}
+
+/* Buttons */
+button{
+  width:100%;
+  padding:12px 16px;
+  background: var(--primary);
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+  transition: transform .12s ease, background .12s ease, box-shadow .12s ease;
+  box-shadow: 0 8px 18px rgba(13,71,161,.25);
+}
+button:hover{
+  background: var(--primary2);
+  transform: translateY(-1px);
+}
+button:active{
+  transform: translateY(0);
+  box-shadow:none;
+}
+
+/* ============ Menu Area ============ */
+.menu-area{
+  display:flex;            /* بدل none هنا */
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+
+/* خلك تتحكم بالاظهار من JS */
+.menu-area.is-hidden{ display:none; }
+
+.menu-icons{
+  margin-top:18px;
+  display:flex;
+  gap:18px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.icon-box{
+  width:160px;
+  text-decoration:none;
+  color:#061027;
+  background:#f3f7ff;
+  border:1px solid rgba(13,71,161,.14);
+  border-radius:14px;
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  transition:.15s;
+}
+.icon-box:hover{
+  transform: translateY(-2px);
+  background:#eaf2ff;
+  border-color: rgba(13,71,161,.28);
+}
+.icon-box img{
+  width:86px;
+  height:86px;
+  border-radius:12px;
+  object-fit:cover;
+}
+
+/* Logout button (واضح وغامق) */
+.logout-btn{
+  margin-top:22px;
+  width:auto;
+  min-width:180px;
+  background:#0b1324;
+  color:#fff;
+  border:none;
+  padding:10px 28px;
+  border-radius:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+.logout-btn:hover{ background:#050a14; }
+
+/* ============ Footer ============ */
+footer{
+  position:fixed;
+  bottom:10px;
+  left:0; right:0;
+  text-align:center;
+  color:#d7e3ff;
+  font-size:14px;
+  opacity:.95;
+}
+
+  </style>
+  <script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("service-worker.js")
+      .then(function (registration) {
+        console.log("ServiceWorker registered with scope:", registration.scope);
+      })
+      .catch(function (error) {
+        console.log("ServiceWorker registration failed:", error);
+      });
+  });
+}
+</script>
+
+</head>
+<body>
+  <div class="right-text">
+      <h2>سلطنة عمان</h2>
+      <h3>هيئة حماية المستهلك</h3>
+      <h4>إدارة حماية المستهلك بمحافظة الظاهرة</h4>
+    </div>
+
+    <div class="logo-container">
+      <img src="image2.png" alt="شعار سلطنة عمان" class="logo">
+    </div>
+  </header>
+
+  <div class="center-title">
+    <h1>تطبيق العمل عن بعد</h1>
+    <h1>مهمة عمل</h1>
+  </div>
+
+
+  <div class="container">
+    <div class="login-box" id="loginBox">
+      <h2>تسجيل دخول الموظف</h2>
+      <input type="text" id="loginId" placeholder="أدخل الرقم الوظيفي" required>
+      <button onclick="login()">دخول</button>
+    </div>
+
+    <div class="menu-area" id="menuArea">
+      <h2>مرحباً بك، <span id="empName"></span></h2>
+      <div class="menu-icons">
+        <a href="form.html" class="icon-box">
+          <img src="https://images.icon-icons.com/452/PNG/96/Tasks_43553.png" alt="ألعمل عن بعد">
+          <span>ألعمل عن بعد</span>
+        </a>
+         <a href="form1.html" class="icon-box">
+          <img src="https://images.icon-icons.com/1482/PNG/96/20business-planning_102142.png" alt="مهمة عمل">
+          <span>مهمة عمل</span>
+        </a>
+      </div>
+    </div>
+  </div>
+ </div>
+
+ <footer>
+  &copy; <span id="year"></span> إدارة حماية المستهلك بمحافظة الظاهرة – جميع الحقوق محفوظة
+</footer>
+
+
+   <script>
+ function login() {
+  const empInput = document.getElementById('loginId'); // الاسم الصحيح هنا
+  const id = empInput.value.trim();
+
+  const allowedIDs = ['376', '373','5011','2271', '5010','575','79','37','366','5014','525','358','350','356','364',
+  '367','578','731','783','375','361','369','370','875','876','1043','38','501','555','560','825','865','751','1024',
+  '300','2130','1089','351','353','354','355','360','362','363','365','368','374','654','732','757','803','815','957',
+  '418','372','804','2169','1112','2231','923','1033','673','1116','2157','832','945','548','974','357','76','1157'];
+
+  if (allowedIDs.includes(id)) {
+    empInput.value = '';
+    empInput.style.display = 'none';
+
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('menuArea').style.display = 'block';
+
+    sessionStorage.setItem('authenticated', 'true');
+    document.getElementById('empName').textContent = id; // عرض الرقم أو الاسم لاحقاً
+  } else {
+    alert('غير مصرح لك بالدخول.');
+  }
+}
+
+    window.onload = function () {
+      localStorage.removeItem("employeeId");
+      localStorage.removeItem("employeeName");
+      document.getElementById("loginBox").style.display = "block";
+      document.getElementById("menuArea").style.display = "none";
+    };
+
+    // (اختياري) منع كليك يمين + اختصارات
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'F12') e.preventDefault();
+    if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) e.preventDefault();
+    if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault();
+  });
+  
+  </script>
+
+</body>
+</html>
