@@ -139,6 +139,7 @@ button {
               <option>قسم التنظيم ومراقبة الأسواق</option>
               <option>قسم التواصل والإعلام</option>
               <option>قسم الشؤون القانونية</option>
+              <option>قسم البريد والوثائق</option>
             </select>
           </div>
           <div class="field-box">
@@ -196,7 +197,7 @@ button {
             <label for="manager"><i class="fas fa-user-tie"></i> المسؤول المباشر:</label>
             <select id="manager" name="managerEmail">
               <option value="">اختر المسؤول</option>
-              <option value="sultan.alzidi@cpa.gov.om">م.يعقوب الغافري</option>
+              <option value="sultan.alzidi@cpa.gov.om">م. يعقوب الغافري</option>
               <option value="mohd.alhinai@cpa.gov.om">محمد الهنائي</option>
               <option value="wadha.alkalbani@cpa.gov.om">وضحى الكلباني</option>
               <option value="ibtisam.alkalbani@cpa.gov.om">ابتسام الكلباني</option>
@@ -217,22 +218,20 @@ button {
         <div class="success-msg" id="successMsg" style="display: none;">
           ✅ تم إرسال البيانات بنجاح
         </div>
-        <div class="error-msg" id="errorMsg" style="display: none;"></div>
-
-         <div style="text-align: center;">
+        <div style="text-align: center;">
   <a href="index.html" class="back-link">
     <i class="fas fa-arrow-right"></i> الرجوع
   </a>
 </div>
-       
       </form>
 
     </div>
   </div>
+ 
 </body>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmruWX3kPCQtA0NpbW31V2fV1m_KooPVzDliJJYou8vE6ANVUVdB954q8MJLT_bxYe0Q/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxtFGN9tSVRK1-aCMu6RDOLLJbPGYixs3jz_7CsoxlrCR9UShdFQwqHDOEZhrcOLmg8IQ/exec";
 
 flatpickr("#dateDisplay", {
   dateFormat: "d-m-Y",
@@ -246,90 +245,58 @@ flatpickr("#dateDisplay", {
   },
 });
 
-// تم تصحيح المعرف هنا إلى form1
-const myForm = document.getElementById("form1");
-
-myForm.addEventListener("submit", function(e) {
+document.getElementById("form").addEventListener("submit", function(e) {
   e.preventDefault();
 
-  const submitBtn = myForm.querySelector('button[type="submit"]');
-  submitBtn.disabled = true;
-  submitBtn.textContent = "جاري الإرسال...";
+  const form = e.target;
+  const formData = new FormData(form);
+
+  // البريد للمدير المباشر
+  const managerEmail = document.getElementById("manager").value;
+  formData.append("managerEmail", managerEmail);
+
+  // الأكشن
+  formData.append("action", "uploadFileAndSubmit");
 
   const fileInput = document.getElementById("attachment");
   const file = fileInput.files && fileInput.files[0];
 
-  // تجميع الحقول يدويًا لتفادي أي مشاكل في إرسال الفورم
-  const payload = {
-    action: "uploadFileAndSubmit",
-    jobNumber: document.getElementById("jobNumber").value,
-    employeeName: document.getElementById("empName").value,
-    department: document.getElementById("department").value,
-    email: document.getElementById("email").value,
-    date: document.getElementById("date").value,
-    workType: document.getElementById("work").value,
-    notes: document.getElementById("notes").value,
-    managerEmail: document.getElementById("manager").value,
-    attachment: "",
-    attachmentType: "",
-    attachmentName: ""
-  };
-
   const sendRequest = () => {
-    // تحويل البيانات إلى URLSearchParams لضمان قراءتها من e.parameter داخل Apps Script
-    const urlParams = new URLSearchParams();
-    for (const key in payload) {
-      urlParams.append(key, payload[key]);
-    }
+    fetch(SCRIPT_URL, { method: "POST", body: formData })
+      .then(res => res.json())
+      .then(result => {
+        const successMsg = document.getElementById("successMsg");
+        const errorMsg = document.getElementById("errorMsg");
 
-    fetch(SCRIPT_URL, {
-      method: "POST",
-      body: urlParams
-    })
-    .then(res => res.json())
-    .then(result => {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "إرسال";
-
-      const successMsg = document.getElementById("successMsg");
-      const errorMsg = document.getElementById("errorMsg");
-
-      if (result.status === "success") {
-        Swal.fire({
-          icon: 'success',
-          title: 'تم الإرسال بنجاح',
-          text: 'تم حفظ البيانات وإرسال التقرير',
-          confirmButtonText: 'حسناً'
-        });
-        myForm.reset();
-        document.getElementById("dateDisplay").value = "";
-      } else {
-        throw new Error(result.message || "فشل الإرسال");
-      }
-    })
-    .catch(err => {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "إرسال";
-
-      Swal.fire({
-        icon: 'error',
-        title: 'خطأ',
-        text: 'حدث خطأ أثناء الإرسال: ' + err.message,
-        confirmButtonText: 'حسناً'
+        if (result.status === "success") {
+          successMsg.style.display = "block";
+          errorMsg.style.display = "none";
+          form.reset();
+          document.getElementById("dateDisplay").value = "";
+        } else {
+          throw new Error(result.message || "فشل الإرسال");
+        }
+      })
+      .catch(err => {
+        const errorMsg = document.getElementById("errorMsg");
+        errorMsg.textContent = "❌ حدث خطأ أثناء الإرسال: " + err.message;
+        errorMsg.style.display = "block";
       });
-    });
   };
 
+  // ✅ إذا فيه ملف: اقرأه وحوّله Base64 ثم أرسله
   if (file) {
     const reader = new FileReader();
     reader.onload = function(event) {
-      payload.attachment = event.target.result.split(',')[1];
-      payload.attachmentType = file.type;
-      payload.attachmentName = file.name;
+      const base64Data = event.target.result.split(',')[1];
+      formData.append("attachment", base64Data);
+      formData.append("attachmentType", file.type);
+      formData.append("attachmentName", file.name);
       sendRequest();
     };
     reader.readAsDataURL(file);
   } else {
+    // ✅ ما فيه ملف: ارسل مباشرة بدون مرفق
     sendRequest();
   }
 });
@@ -337,7 +304,6 @@ myForm.addEventListener("submit", function(e) {
 function goToReports() {
   window.location.href = "report1.html";
 }
-
 // (اختياري) منع كليك يمين + اختصارات
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('keydown', function (e) {

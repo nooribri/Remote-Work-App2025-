@@ -1,8 +1,8 @@
 {
   "name": "Remote Work App",
   "short_name": "RemoteWork",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/remote-work-app/",
+  "scope": "/remote-work-app/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",

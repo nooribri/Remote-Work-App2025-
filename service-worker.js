@@ -1,28 +1,27 @@
-// قم بزيادة رقم الإصدار (v2 -> v3) عند إجراء تعديلات كبيرة
-const CACHE_NAME = "remote-work-app-v2";
+const CACHE_NAME = "remote-work-app-v1";
 
-// استخدام مسارات نسبية ليكون التطبيق حراً ومفتوحاً على أي مجلد
 const URLS_TO_CACHE = [
-  "./",
-  "./index.html",
-  "./form.html",
-  "./form1.html",
-  "./report.html",
-  "./report1.html",
-  "./manifest.json"
+  "/remote-work-app/",
+  "/remote-work-app/index.html",
+  "/remote-work-app/form.html",
+  "/remote-work-app/form1.html",
+  "/remote-work-app/report.html",
+  "/remote-work-app/report1.html",
+  "/remote-work-app/manifest.json"
+  // لاحقًا يمكنك إضافة:
+  // "/remote-work-app/icons/icon-192.png",
+  // "/remote-work-app/icons/icon-512.png"
 ];
 
-// تثبيت الـ Service Worker وتخزين الملفات الأساسية
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(URLS_TO_CACHE);
     })
   );
-  self.skipWaiting(); // فرض التفعيل فوراً وتخطي الانتظار
+  self.skipWaiting();
 });
 
-// تنشيط وحذف الكاش القديم بالكامل
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys => {
@@ -33,31 +32,14 @@ self.addEventListener("activate", event => {
       );
     })
   );
-  self.clients.claim(); // السيطرة المباشرة على كل الصفحات المفتوحة
+  self.clients.claim();
 });
 
-// استراتيجية (Network First): فحص السيرفر أولاً للتحديث ثم الكاش
 self.addEventListener("fetch", event => {
-  // تجاهل طلبات Google Apps Script والطلبات الخارجية
-  if (!event.request.url.startsWith(self.location.origin)) {
-    return;
-  }
-
   event.respondWith(
-    fetch(event.request)
-      .then(networkResponse => {
-        // إذا نجح الاتصال، خزن النسخة الأحدث في الكاش وارجعها للمستخدم
-        if (networkResponse && networkResponse.status === 200) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseClone);
-          });
-        }
-        return networkResponse;
-      })
-      .catch(() => {
-        // في حال انقطاع الإنترنت، يتم جلب الصفحة من الكاش المخزن
-        return caches.match(event.request);
-      })
+    caches.match(event.request).then(response => {
+      // لو الملف موجود في الكاش رجّعه، وإلا حمّله من الشبكة
+      return response || fetch(event.request);
+    })
   );
 });
